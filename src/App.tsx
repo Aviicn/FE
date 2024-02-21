@@ -30,7 +30,6 @@ function SelectBasicExample() {
           value: string;
           label: string;
         }
-          label: string; // Sesuaikan dengan tipe data yang benar untuk label
 
         const provinces = response.data.map((province: Option) => ({
           value: province.value,
