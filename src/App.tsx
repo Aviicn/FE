@@ -10,7 +10,7 @@ function SelectBasicExample() {
   const [selectedKecamatan, setSelectedKecamatan] = useState("");
   const [selectedKelurahan, setSelectedKelurahan] = useState("");
 
-  
+
   const [showKabupatenForm, setShowKabupatenForm] = useState(false); // State untuk mengontrol visibilitas form kedua
   const [showKecamatanForm, setShowKecamatanForm] = useState(false); // State untuk mengontrol visibilitas form kedua
   const [showKelurahanForm, setShowKelurahanForm] = useState(false); // State untuk mengontrol visibilitas form kedua
@@ -19,27 +19,22 @@ function SelectBasicExample() {
   const [dataKabupaten, setDataKabupaten] = useState([]);
   const [dataKecamatan, setDataKecamatan] = useState([]);
   const [dataKelurahan, setDataKelurahan] = useState([]);
-  console.log(data, "hah")
+
 
   useEffect(() => {
     const fetchProvinsi = async () => {
       try {
         const response = await axios.get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json');
 
-
-        interface Province {
-          id: string; 
-          name: string; 
+        interface Option {
+          value: string;
+          label: string;
         }
-        interface OptionItem {
-          value: string; // Sesuaikan dengan tipe data yang benar untuk value
           label: string; // Sesuaikan dengan tipe data yang benar untuk label
-        }
-        
-        const provinces = response.data.map((province: Province) => ({
-          value: province.id,
-          label: province.name,
 
+        const provinces = response.data.map((province: Option) => ({
+          value: province.value,
+          label: province.label,
         }));
         setData(provinces);
         setSelectedProvince(provinces[0].value);
@@ -53,15 +48,15 @@ function SelectBasicExample() {
 
 
   const getKabupaten = (e: string) => {
-   
+
     const fetchKabupaten = async () => {
       try {
         console.log("response s: ", e)
 
         const response = await axios.get('https://www.emsifa.com/api-wilayah-indonesia/api/regencies/' + e + '.json');
         interface Kabupaten {
-          id: string; 
-          name: string; 
+          id: string;
+          name: string;
         }
 
         const kabupatens = response.data.map((kabupaten: Kabupaten) => ({
@@ -87,8 +82,8 @@ function SelectBasicExample() {
 
         const response = await axios.get('https://www.emsifa.com/api-wilayah-indonesia/api/districts/' + e + '.json');
         interface Kecamatan {
-          id: string; 
-          name: string; 
+          id: string;
+          name: string;
         }
         const kecamatans = response.data.map((kecamatan: Kecamatan) => ({
           value: kecamatan.id,
@@ -112,8 +107,8 @@ function SelectBasicExample() {
 
         const response = await axios.get('https://www.emsifa.com/api-wilayah-indonesia/api/villages/' + e + '.json');
         interface Kelurahan {
-          id: string; 
-          name: string; 
+          id: string;
+          name: string;
         }
         const kelurahans = response.data.map((kelurahan: Kelurahan) => ({
           value: kelurahan.id,
@@ -131,7 +126,7 @@ function SelectBasicExample() {
     fetchKelurahan();
   };
 
-  const handleProvinceChange =(e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedProvince(e.target.value);
     getKabupaten(e.target.value);
     setShowKabupatenForm(true); // Menampilkan form kedua setelah memilih provinsi
@@ -142,7 +137,7 @@ function SelectBasicExample() {
     getKecamatan(e.target.value);
     setShowKecamatanForm(true); // Menampilkan form kecamatan setelah memilih kabupaten/kota
   };
-  
+
   const handleKecamatanChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedKecamatan(e.target.value);
     getKelurahan(e.target.value);
@@ -151,50 +146,49 @@ function SelectBasicExample() {
 
   const handleKelurahanChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedKelurahan(e.target.value);
-   
+
     //setShowKelurahanForm(true); // Menampilkan form kedua setelah memilih provinsi
   };
   return (
     <div className="container">
-    <div className="select-container">
-      <div className="select-label">Pilih Provinsi
-        <Form.Select className="form-select" aria-label="Default select example" value={selectedProvince} onChange={handleProvinceChange}>
-          {data.map((items) => (
-           <option key={items.value} value={items.value}>{items.label}</option>
-          ))}
-        </Form.Select>
-      </div>
-      {showKabupatenForm && (
-        <div className="select-label">Pilih Kab/kota
-          <Form.Select className="form-select" aria-label="Default select example" value={selectedKabupaten} onChange={handleKabupatenChange}>
-            {dataKabupaten.map((items) => (
+      <div className="select-container">
+        <div className="select-label">Pilih Provinsi
+          <Form.Select className="form-select" aria-label="Default select example" value={selectedProvince} onChange={handleProvinceChange}>
+            {data.map((items) => (
               <option key={items.value} value={items.value}>{items.label}</option>
             ))}
           </Form.Select>
         </div>
+        {showKabupatenForm && (
+          <div className="select-label">Pilih Kab/kota
+            <Form.Select className="form-select" aria-label="Default select example" value={selectedKabupaten} onChange={handleKabupatenChange}>
+              {dataKabupaten.map((items) => (
+                <option key={items.value} value={items.value}>{items.label}</option>
+              ))}
+            </Form.Select>
+          </div>
 
-      )}
-      {showKecamatanForm && (
-        <div className="select-label">Pilih Kecamatan
-          <Form.Select className="form-select" aria-label="Default select example" value={selectedKecamatan} onChange={handleKecamatanChange}>
-            {dataKecamatan.map((items) => (
-              <option key={items.value} value={items.value}>{items.label}</option>
-            ))}
-          </Form.Select>
-        </div>
-      )}
-      {showKelurahanForm && (
-        <div className="select-label">Pilih Kelurahan
-          <Form.Select className="form-select" aria-label="Default select example" value={selectedKelurahan} onChange={handleKelurahanChange}>
-            {dataKelurahan.map((items) => (
-              <option key={items.value} value={items.value}>{items.label}</option>
-            ))}
-          </Form.Select>
-        </div>
-       )}
-     </div>
-     </div>
-   );
- }
- export default SelectBasicExample;
-       
+        )}
+        {showKecamatanForm && (
+          <div className="select-label">Pilih Kecamatan
+            <Form.Select className="form-select" aria-label="Default select example" value={selectedKecamatan} onChange={handleKecamatanChange}>
+              {dataKecamatan.map((items) => (
+                <option key={items.value} value={items.value}>{items.label}</option>
+              ))}
+            </Form.Select>
+          </div>
+        )}
+        {showKelurahanForm && (
+          <div className="select-label">Pilih Kelurahan
+            <Form.Select className="form-select" aria-label="Default select example" value={selectedKelurahan} onChange={handleKelurahanChange}>
+              {dataKelurahan.map((items) => (
+                <option key={items.value} value={items.value}>{items.label}</option>
+              ))}
+            </Form.Select>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+export default SelectBasicExample;
